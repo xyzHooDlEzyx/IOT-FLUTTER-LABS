@@ -109,6 +109,31 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Padding(padding: const EdgeInsets.symmetric(horizontal:
+            8, vertical: 16),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Enter counter value'
+              ),
+              onFieldSubmitted: (value){
+                setState(() {
+                  _counter = int.tryParse(value) ?? 0;
+                });
+              },
+            ),
+            ),
+
+            const Padding(padding: const EdgeInsets.symmetric(horizontal:
+            8, vertical: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'SEARCH ME?',
+              ),
+            ),
+            )
           ],
         ),
       ),
