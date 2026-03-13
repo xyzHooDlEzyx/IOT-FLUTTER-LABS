@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const MyApp());
@@ -104,11 +105,42 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
+            SvgPicture.asset(
+              'assets/images/microsoft_logo.svg',
+              height: 30,
+              width: 30,
+              semanticsLabel: 'Microsoft Logo',
+            ),
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Padding(padding: const EdgeInsets.symmetric(horizontal:
+            8, vertical: 16),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Enter counter value'
+              ),
+              onFieldSubmitted: (value){
+                setState(() {
+                  _counter = int.tryParse(value) ?? 0;
+                });
+              },
+            ),
+            ),
+
+            const Padding(padding: const EdgeInsets.symmetric(horizontal:
+            8, vertical: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'SEARCH ME?',
+              ),
+            ),
+            )
           ],
         ),
       ),
