@@ -106,7 +106,7 @@ class HomePage extends StatelessWidget {
             runSpacing: 12,
             children: [
               SizedBox(
-                width: 200,
+                width: 170,
                 child: PrimaryButton(
                   label: 'Open profile',
                   onPressed: () {
@@ -115,7 +115,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 200,
+                width: 170,
                 child: PrimaryButton(
                   label: 'Add device',
                   onPressed: () {

@@ -40,12 +40,31 @@ class AddPage extends StatelessWidget {
               label: 'device(optional)',
               hint: 'esp_relay',),
             const SizedBox(height: 24),
-            PrimaryButton(
-              label: 'Back to home',
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.home);
-              },
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                SizedBox(
+                  width: 140,
+                  child: PrimaryButton(
+                    label: 'Go Back',
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.home);
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 140,
+                  child: PrimaryButton(
+                    label: 'Add Device',
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.home);
+                    },
+                  ),
+                ),
+              ],
             ),
+
           ],
         ),
       ),
