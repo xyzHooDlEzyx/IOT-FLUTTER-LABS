@@ -6,13 +6,15 @@ class DeviceTile extends StatelessWidget {
     required this.location,
     required this.status,
     required this.icon,
-    super.key
+    super.key,
+    this.trailing,
   });
 
   final String name;
   final String location;
   final String status;
   final IconData icon;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +46,11 @@ class DeviceTile extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            status,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
+          trailing ??
+              Text(
+                status,
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
         ],
       ),
     );
