@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+import 'package:my_project/routes/app_routes.dart';
+import 'package:my_project/screens/add_page.dart';
+import 'package:my_project/screens/home_page.dart';
+import 'package:my_project/screens/login_page.dart';
+import 'package:my_project/screens/profile_page.dart';
+import 'package:my_project/screens/register_page.dart';
+import 'package:my_project/theme/app_theme.dart';
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'IoT Flutter Lab',
+      theme: AppTheme.light(),
+      initialRoute: AppRoutes.login,
+      routes: {
+        AppRoutes.login: (context) => const LoginPage(),
+        AppRoutes.register: (context) => const RegisterPage(),
+        AppRoutes.home: (context) => const HomePage(),
+        AppRoutes.profile: (context) => const ProfilePage(),
+        AppRoutes.add: (context) => const AddPage(),
+      },
+    );
+  }
+}
