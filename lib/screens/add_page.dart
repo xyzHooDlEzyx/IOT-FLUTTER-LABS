@@ -18,6 +18,8 @@ class _AddPageState extends State<AddPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
+  DeviceItem? _editingDevice;
+  bool _didLoadDevice = false;
 
   @override
   void dispose() {
@@ -25,6 +27,22 @@ class _AddPageState extends State<AddPage> {
     _locationController.dispose();
     _statusController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didLoadDevice) {
+      return;
+    }
+    _didLoadDevice = true;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is DeviceItem) {
+      _editingDevice = args;
+      _nameController.text = args.name;
+      _locationController.text = args.location;
+      _statusController.text = args.status;
+    }
   }
 
   Future<void> _handleAdd() async {
@@ -40,8 +58,20 @@ class _AddPageState extends State<AddPage> {
     }
 
     final devices = await DeviceStore.instance.getDevices();
-    final updated = List<DeviceItem>.from(devices)
-      ..add(
+    final updated = List<DeviceItem>.from(devices);
+    if (_editingDevice != null) {
+      final device = _editingDevice!;
+      final index = updated.indexWhere((item) => item.id == device.id);
+      final next = device.copyWith(
+        name: name,
+        location: location,
+        status: status,
+      );
+      if (index >= 0) {
+        updated[index] = next;
+      }
+    } else {
+      updated.add(
         DeviceItem(
           id: DateTime.now().microsecondsSinceEpoch.toString(),
           name: name,
@@ -49,6 +79,7 @@ class _AddPageState extends State<AddPage> {
           status: status,
         ),
       );
+    }
 
     await DeviceStore.instance.saveDevices(updated);
     if (!mounted) {
@@ -60,13 +91,15 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return AppShell(
-      title: 'Add device',
+      title: _editingDevice == null ? 'Add device' : 'Edit device',
       child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Add a new device to your IoT network',
+              _editingDevice == null
+                  ? 'Add a new device to your IoT network'
+                  : 'Update the device details',
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 10),
@@ -104,7 +137,8 @@ class _AddPageState extends State<AddPage> {
                 SizedBox(
                   width: 140,
                   child: PrimaryButton(
-                    label: 'Add device',
+                    label:
+                        _editingDevice == null ? 'Add device' : 'Save',
                     onPressed: _handleAdd,
                   ),
                 ),

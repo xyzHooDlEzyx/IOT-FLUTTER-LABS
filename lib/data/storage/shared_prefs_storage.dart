@@ -1,6 +1,7 @@
+import 'package:my_project/data/storage/key_value_storage.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my_project/data/storage/key_value_storage.dart';
 
 class SharedPrefsStorage implements KeyValueStorage {
   Future<SharedPreferences> get _prefs async {

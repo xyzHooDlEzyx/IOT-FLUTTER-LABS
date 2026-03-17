@@ -29,7 +29,7 @@ class DeviceTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: scheme.secondary.withOpacity(0.15),
+            backgroundColor: scheme.secondary.withValues(alpha: 0.15),
             child: Icon(icon, color: scheme.secondary),
           ),
           const SizedBox(width: 16),

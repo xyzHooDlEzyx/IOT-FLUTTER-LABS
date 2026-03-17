@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_project/routes/app_routes.dart';
 import 'package:my_project/screens/add_page.dart';
+import 'package:my_project/screens/device_detail_page.dart';
 import 'package:my_project/screens/home_page.dart';
 import 'package:my_project/screens/login_page.dart';
 import 'package:my_project/screens/profile_page.dart';
@@ -30,6 +31,7 @@ class App extends StatelessWidget {
         AppRoutes.profile: (context) => const ProfilePage(),
         AppRoutes.add: (context) => const AddPage(),
         AppRoutes.viewAll: (context) => const ViewAllDevicesPage(),
+        AppRoutes.deviceDetail: (context) => const DeviceDetailPage(),
       },
     );
   }

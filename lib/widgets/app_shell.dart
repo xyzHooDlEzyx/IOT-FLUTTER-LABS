@@ -31,14 +31,14 @@ class AppShell extends StatelessWidget {
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
+              const padding = EdgeInsets.fromLTRB(20, 16, 20, 24);
+              final minHeight = constraints.maxHeight - padding.vertical;
+
               return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 24,
-                ),
+                padding: padding,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
+                    minHeight: minHeight,
                   ),
                   child: ResponsiveCenter(
                     child: Column(
