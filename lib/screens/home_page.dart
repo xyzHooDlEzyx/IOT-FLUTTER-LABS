@@ -1,14 +1,17 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
 import 'package:my_project/domain/models/device_item.dart';
 import 'package:my_project/routes/app_routes.dart';
+import 'package:my_project/services/auth_store.dart';
 import 'package:my_project/services/device_store.dart';
+import 'package:my_project/services/theme_store.dart';
 import 'package:my_project/widgets/app_card.dart';
 import 'package:my_project/widgets/app_shell.dart';
 import 'package:my_project/widgets/device_list_item.dart';
 import 'package:my_project/widgets/icon_action_button.dart';
+import 'package:my_project/widgets/menu_drawer_panel.dart';
 import 'package:my_project/widgets/section_title.dart';
 import 'package:my_project/widgets/stat_tile.dart';
 
@@ -78,14 +81,91 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _handleMenuAction(String action) {
+    if (action == 'theme') {
+      _toggleThemeMode();
+      return;
+    }
     if (action == 'profile') {
       Navigator.pushNamed(context, AppRoutes.profile);
       return;
     }
+    if (action == 'logout') {
+      _logout();
+      return;
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Coming soon.')),
+    _showOverlayMessage('Coming soon.');
+  }
+
+  Future<void> _logout() async {
+    await AuthStore.instance.setLoggedIn(false);
+    if (!mounted) {
+      return;
+    }
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
     );
+  }
+
+  Future<void> _toggleThemeMode() async {
+    final mode = await ThemeStore.instance.cycleThemeMode();
+    if (!mounted) {
+      return;
+    }
+    final label = switch (mode) {
+      ThemeMode.light => 'Light',
+      ThemeMode.dark => 'Dark',
+      ThemeMode.system => 'System',
+    };
+    _showOverlayMessage('Theme: $label');
+  }
+
+  void _showOverlayMessage(String message) {
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) {
+      return;
+    }
+
+    late OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (context) {
+        return SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              child: Material(
+                color: Theme.of(context).colorScheme.inverseSurface,
+                elevation: 8,
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onInverseSurface,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    overlay.insert(entry);
+    Timer(const Duration(seconds: 2), () {
+      entry.remove();
+    });
   }
 
   void _openMenuDrawer() {
@@ -105,61 +185,13 @@ class _HomePageState extends State<HomePage> {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Material(
-                  color: Theme.of(context).colorScheme.surface,
-                  elevation: 8,
-                  borderRadius: const BorderRadius.horizontal(
-                    left: Radius.circular(20),
-                  ),
-                  child: SizedBox(
-                    width: 240,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 20,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Menu',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium,
-                          ),
-                          const SizedBox(height: 12),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: const Icon(Icons.palette_outlined),
-                            title: const Text('Theme'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              _handleMenuAction('theme');
-                            },
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: const Icon(Icons.settings_outlined),
-                            title: const Text('Settings'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              _handleMenuAction('settings');
-                            },
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: const Icon(Icons.person_outline),
-                            title: const Text('Profile'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              _handleMenuAction('profile');
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                child: MenuDrawerPanel(
+                  onActionSelected: (action) {
+                    if (action != 'theme') {
+                      Navigator.pop(context);
+                    }
+                    _handleMenuAction(action);
+                  },
                 ),
               ),
             ],
@@ -195,23 +227,16 @@ class _HomePageState extends State<HomePage> {
     return AppShell(
       title: 'Urban IoT Grid',
       subtitle: 'Live overview of your connected spaces',
+      trailing: IconButton(
+        icon: Icon(
+          Icons.menu,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+        onPressed: _openMenuDrawer,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: Icon(
-                Icons.menu,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.6),
-              ),
-              onPressed: _openMenuDrawer,
-            ),
-          ),
-          const SizedBox(height: 4),
           AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,10 +333,6 @@ class _HomePageState extends State<HomePage> {
                       IconActionButton(
                         tooltip: 'Add device',
                         icon: Icons.add,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withValues(alpha: 0.5),
                         onPressed: _openAdd,
                       ),
                     ],

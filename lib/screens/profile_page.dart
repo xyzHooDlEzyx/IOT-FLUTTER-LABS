@@ -7,6 +7,7 @@ import 'package:my_project/services/auth_store.dart';
 import 'package:my_project/widgets/app_card.dart';
 import 'package:my_project/widgets/app_shell.dart';
 import 'package:my_project/widgets/app_text_field.dart';
+import 'package:my_project/widgets/icon_action_button.dart';
 import 'package:my_project/widgets/info_row.dart';
 import 'package:my_project/widgets/primary_button.dart';
 import 'package:my_project/widgets/section_title.dart';
@@ -139,6 +140,15 @@ class _ProfilePageState extends State<ProfilePage> {
     return AppShell(
       title: 'Profile',
       subtitle: 'Your workspace identity',
+      leading: IconActionButton(
+        tooltip: 'Back to dashboard',
+        icon: Icons.chevron_left,
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.home);
+        },
+      ),
+      headerSpacing: 12,
+      subtitleSpacing: 0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -219,13 +229,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 20),
-          PrimaryButton(
-            label: 'Back to dashboard',
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.home);
-            },
-          ),
-          const SizedBox(height: 12),
           GhostButton(
             label: 'Log out',
             onPressed: _logout,

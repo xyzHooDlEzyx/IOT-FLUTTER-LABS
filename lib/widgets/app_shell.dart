@@ -7,25 +7,44 @@ class AppShell extends StatelessWidget {
     required this.child,
     super.key,
     this.subtitle,
+    this.leading,
+    this.trailing,
+    this.headerSpacing = 24,
+    this.subtitleSpacing = 8,
   });
 
   final String title;
   final String? subtitle;
   final Widget child;
+  final Widget? leading;
+  final Widget? trailing;
+  final double headerSpacing;
+  final double subtitleSpacing;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final background = Theme.of(context).scaffoldBackgroundColor;
+    final isDark = scheme.brightness == Brightness.dark;
+    final gradientColors = isDark
+        ? [
+            background,
+            const Color(0xFF121315),
+            const Color(0xFF0B0B0B),
+          ]
+        : const [
+            Color(0xFFF2F2F0),
+            Color(0xFFE6ECEA),
+            Color(0xFFF7F4EE),
+          ];
+
     return Scaffold(
       body: DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF2F2F0),
-              Color(0xFFE6ECEA),
-              Color(0xFFF7F4EE),
-            ],
+            colors: gradientColors,
           ),
         ),
         child: SafeArea(
@@ -44,22 +63,42 @@ class AppShell extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (leading != null) ...[
+                              leading!,
+                              const SizedBox(width: 8),
+                            ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
+                                  ),
+                                  if (subtitle != null) ...[
+                                    SizedBox(height: subtitleSpacing),
+                                    Text(
+                                      subtitle!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            if (trailing != null) ...[
+                              const SizedBox(width: 8),
+                              trailing!,
+                            ],
+                          ],
                         ),
-                        if (subtitle != null) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            subtitle!,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge,
-                          ),
-                        ],
-                        const SizedBox(height: 24),
+                        SizedBox(height: headerSpacing),
                         child,
                       ],
                     ),

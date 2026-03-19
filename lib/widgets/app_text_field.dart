@@ -8,6 +8,8 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.obscureText = false,
     this.keyboardType,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   final String label;
@@ -15,6 +17,8 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,8 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,

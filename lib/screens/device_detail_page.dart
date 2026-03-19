@@ -14,10 +14,6 @@ class DeviceDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     final device = args is DeviceItem ? args : null;
-    final iconColor = Theme.of(context)
-      .colorScheme
-      .onSurface
-      .withValues(alpha: 0.4);
 
     return AppShell(
       title: 'Device details',
@@ -37,7 +33,6 @@ class DeviceDetailPage extends StatelessWidget {
                   IconActionButton(
                     tooltip: 'Back',
                     icon: Icons.chevron_left,
-                    color: iconColor,
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -46,7 +41,6 @@ class DeviceDetailPage extends StatelessWidget {
                   IconActionButton(
                     tooltip: 'Edit device',
                     icon: Icons.edit,
-                    color: iconColor,
                     onPressed: () {
                       Navigator.pushNamed(
                         context,

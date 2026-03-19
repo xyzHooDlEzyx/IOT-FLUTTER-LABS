@@ -88,10 +88,6 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
                 IconActionButton(
                   tooltip: 'Back',
                   icon: Icons.chevron_left,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.5),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -100,10 +96,6 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
                 IconActionButton(
                   tooltip: 'Add device',
                   icon: Icons.add,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.5),
                   onPressed: _openAdd,
                 ),
               ],

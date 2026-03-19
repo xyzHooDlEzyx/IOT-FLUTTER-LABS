@@ -94,6 +94,10 @@ class _LoginPageState extends State<LoginPage> {
               hint: 'name@domain.com',
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              onSubmitted: (_) {
+                FocusScope.of(context).nextFocus();
+              },
             ),
             const SizedBox(height: 16),
             AppTextField(
@@ -101,6 +105,8 @@ class _LoginPageState extends State<LoginPage> {
               hint: '********',
               controller: _passwordController,
               obscureText: true,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _handleLogin(),
             ),
             const SizedBox(height: 20),
             PrimaryButton(
