@@ -50,18 +50,24 @@ class LocalDeviceRepository implements DeviceRepository {
         name: 'Air quality node',
         location: 'District 4, Roof A',
         status: 'Stable',
+        mqttUrl: 'broker.hivemq.com',
+        topic: 'sensor/air',
       ),
       DeviceItem(
         id: 'seed-2',
         name: 'Traffic lidar',
         location: 'Main boulevard',
         status: 'Active',
+        mqttUrl: 'broker.hivemq.com',
+        topic: 'sensor/traffic',
       ),
       DeviceItem(
         id: 'seed-3',
         name: 'Water flow',
         location: 'South reservoir',
         status: 'Syncing',
+        mqttUrl: 'broker.hivemq.com',
+        topic: 'sensor/water',
       ),
     ];
   }
