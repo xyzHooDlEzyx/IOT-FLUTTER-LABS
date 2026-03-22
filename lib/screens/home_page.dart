@@ -41,7 +41,6 @@ class _HomePageState extends State<HomePage> {
       },
       shakeThresholdGravity: 1.8,
       shakeSlopTimeMS: 300,
-      minimumShakeCount: 1,
       useFilter: true,
     );
   }

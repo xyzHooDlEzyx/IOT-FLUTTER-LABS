@@ -15,7 +15,6 @@ class AppCard extends StatelessWidget {
     final side = isDark
         ? BorderSide(
             color: scheme.outline.withValues(alpha: 0.6),
-            width: 1,
           )
         : BorderSide.none;
 
