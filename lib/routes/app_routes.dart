@@ -4,4 +4,6 @@ class AppRoutes {
   static const String home = '/home';
   static const String profile = '/profile';
   static const String add = '/add';
+  static const String viewAll = '/devices';
+  static const String deviceDetail = '/device';
 }

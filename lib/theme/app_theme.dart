@@ -29,4 +29,34 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData dark() {
+    const baseScheme = ColorScheme(
+      brightness: Brightness.dark,
+      primary: Color(0xFFFFFFFF),
+      onPrimary: Color(0xFF0B0B0B),
+      secondary: Color(0xFFBFBFBF),
+      onSecondary: Color(0xFF0B0B0B),
+      error: Color(0xFFCF6679),
+      onError: Color(0xFF0B0B0B),
+      surface: Color(0xFF0F0F10),
+      onSurface: Color(0xFFF2F2F2),
+    );
+
+    final textTheme = GoogleFonts.spaceGroteskTextTheme(
+      ThemeData.dark().textTheme,
+    );
+
+    return ThemeData(
+      colorScheme: baseScheme,
+      textTheme: textTheme,
+      useMaterial3: true,
+      scaffoldBackgroundColor: const Color(0xFF0B0B0B),
+      inputDecorationTheme: const InputDecorationTheme(
+        filled: true,
+        fillColor: Color(0xFF151515),
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
 }

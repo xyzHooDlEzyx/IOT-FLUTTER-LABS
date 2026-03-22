@@ -6,12 +6,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:my_project/app.dart';
+import 'package:my_project/routes/app_routes.dart';
 
 void main() {
   testWidgets('Login screen renders', (WidgetTester tester) async {
-    await tester.pumpWidget(const App());
+    await tester.pumpWidget(const App(initialRoute: AppRoutes.login));
 
     expect(find.text('Welcome back'), findsOneWidget);
     expect(find.text('Access your IoT control room'), findsOneWidget);
