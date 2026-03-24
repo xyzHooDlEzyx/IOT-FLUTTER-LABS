@@ -24,6 +24,8 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
   final Map<String, MqttService> _mqttClients = {};
   final Map<String, StreamSubscription<bool>> _connectionSubs = {};
   final Map<String, bool> _connectionMap = {};
+  final Map<String, String> _connectionConfig = {};
+  String _syncKey = '';
 
   @override
   void initState() {
@@ -50,8 +52,29 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
     setState(() {
       _devices = devices;
       _isLoading = false;
+      _syncKey = '';
     });
     await _syncConnections(devices);
+  }
+
+  void _ensureConnectionsSynced() {
+    if (_isLoading) {
+      return;
+    }
+    final segments = _devices
+        .map((device) => '${device.id}:${device.mqttUrl}:${device.topic}')
+        .toList();
+    final nextKey = segments.join('|');
+    if (nextKey == _syncKey) {
+      return;
+    }
+    _syncKey = nextKey;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _syncConnections(_devices);
+    });
   }
 
   Future<void> _syncConnections(List<DeviceItem> devices) async {
@@ -66,20 +89,32 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
       _mqttClients[id]?.dispose();
       _mqttClients.remove(id);
       _connectionMap.remove(id);
+      _connectionConfig.remove(id);
     }
 
     for (final device in devices) {
       final hasConfig = device.mqttUrl.isNotEmpty && device.topic.isNotEmpty;
+      final configKey = '${device.mqttUrl}|${device.topic}';
       if (!hasConfig) {
         _connectionMap[device.id] = false;
+        _connectionConfig.remove(device.id);
         continue;
       }
-      if (_mqttClients.containsKey(device.id)) {
+      final existingConfig = _connectionConfig[device.id];
+      if (_mqttClients.containsKey(device.id) && existingConfig == configKey) {
         continue;
+      }
+
+      if (_mqttClients.containsKey(device.id)) {
+        await _connectionSubs[device.id]?.cancel();
+        _connectionSubs.remove(device.id);
+        _mqttClients[device.id]?.dispose();
+        _mqttClients.remove(device.id);
       }
 
       final client = MqttService();
       _mqttClients[device.id] = client;
+      _connectionConfig[device.id] = configKey;
       _connectionSubs[device.id] =
           client.connectionStatus.listen((isConnected) {
         if (!mounted) {
@@ -121,6 +156,10 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
       AppRoutes.deviceDetail,
       arguments: device,
     );
+    if (!mounted) {
+      return;
+    }
+    await _loadDevices();
   }
 
   Future<void> _deleteDevice(DeviceItem device) async {
@@ -149,6 +188,8 @@ class _ViewAllDevicesPageState extends State<ViewAllDevicesPage> {
 
   @override
   Widget build(BuildContext context) {
+    _ensureConnectionsSynced();
+
     return AppShell(
       title: 'All devices',
       subtitle: 'Everything connected to your workspace',

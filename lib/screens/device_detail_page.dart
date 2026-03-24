@@ -74,6 +74,8 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     if (device == null) {
       return;
     }
+
+    _mqttService.disconnect();
     if (device.mqttUrl.isEmpty || device.topic.isEmpty) {
       setState(() {
         _connectionLabel = 'MQTT not configured';
@@ -190,12 +192,17 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
                   IconActionButton(
                     tooltip: 'Edit device',
                     icon: Icons.edit,
-                    onPressed: () {
-                      Navigator.pushNamed(
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(
                         context,
                         AppRoutes.add,
                         arguments: device,
                       );
+                      if (!mounted || result != true) {
+                        return;
+                      }
+                      await _loadLastPayload(device.id);
+                      await _connectMqtt();
                     },
                   ),
                 ],
