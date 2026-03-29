@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.3
   google_fonts: ^8.0.2
+  mqtt_client: ^10.10.0
   shared_preferences: ^2.5.3
   shake: ^3.0.0
 

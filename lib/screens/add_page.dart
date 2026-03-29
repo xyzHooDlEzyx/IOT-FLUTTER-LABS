@@ -18,6 +18,8 @@ class _AddPageState extends State<AddPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
+  final TextEditingController _mqttUrlController = TextEditingController();
+  final TextEditingController _topicController = TextEditingController();
   DeviceItem? _editingDevice;
   bool _didLoadDevice = false;
 
@@ -26,6 +28,8 @@ class _AddPageState extends State<AddPage> {
     _nameController.dispose();
     _locationController.dispose();
     _statusController.dispose();
+    _mqttUrlController.dispose();
+    _topicController.dispose();
     super.dispose();
   }
 
@@ -42,6 +46,8 @@ class _AddPageState extends State<AddPage> {
       _nameController.text = args.name;
       _locationController.text = args.location;
       _statusController.text = args.status;
+      _mqttUrlController.text = args.mqttUrl;
+      _topicController.text = args.topic;
     }
   }
 
@@ -49,8 +55,14 @@ class _AddPageState extends State<AddPage> {
     final name = _nameController.text.trim();
     final location = _locationController.text.trim();
     final status = _statusController.text.trim();
+    final mqttUrl = _mqttUrlController.text.trim();
+    final topic = _topicController.text.trim();
 
-    if (name.isEmpty || location.isEmpty || status.isEmpty) {
+    if (name.isEmpty ||
+        location.isEmpty ||
+        status.isEmpty ||
+        mqttUrl.isEmpty ||
+        topic.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Fill in all device fields.')),
       );
@@ -66,6 +78,8 @@ class _AddPageState extends State<AddPage> {
         name: name,
         location: location,
         status: status,
+        mqttUrl: mqttUrl,
+        topic: topic,
       );
       if (index >= 0) {
         updated[index] = next;
@@ -77,6 +91,8 @@ class _AddPageState extends State<AddPage> {
           name: name,
           location: location,
           status: status,
+          mqttUrl: mqttUrl,
+          topic: topic,
         ),
       );
     }
@@ -119,6 +135,19 @@ class _AddPageState extends State<AddPage> {
               label: 'Status',
               hint: 'Active',
               controller: _statusController,
+            ),
+            const SizedBox(height: 16),
+            AppTextField(
+              label: 'MQTT broker URL',
+              hint: 'broker.hivemq.com',
+              controller: _mqttUrlController,
+              keyboardType: TextInputType.url,
+            ),
+            const SizedBox(height: 16),
+            AppTextField(
+              label: 'MQTT topic',
+              hint: 'sensor/temperature',
+              controller: _topicController,
             ),
             const SizedBox(height: 24),
             Wrap(
