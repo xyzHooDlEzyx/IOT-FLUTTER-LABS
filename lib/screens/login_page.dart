@@ -45,17 +45,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final user = await AuthStore.instance.getUser();
-    if (user == null) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No local account found.')),
-      );
-      return;
-    }
-
     final isValid =
         await AuthStore.instance.validateLogin(email, password);
     if (!mounted) {
