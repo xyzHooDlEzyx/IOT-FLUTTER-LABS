@@ -9,6 +9,7 @@ class AppShell extends StatelessWidget {
     this.subtitle,
     this.leading,
     this.trailing,
+    this.onTitleLongPress,
     this.headerSpacing = 24,
     this.subtitleSpacing = 8,
   });
@@ -18,6 +19,7 @@ class AppShell extends StatelessWidget {
   final Widget child;
   final Widget? leading;
   final Widget? trailing;
+  final VoidCallback? onTitleLongPress;
   final double headerSpacing;
   final double subtitleSpacing;
 
@@ -73,11 +75,14 @@ class AppShell extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium,
+                                  GestureDetector(
+                                    onLongPress: onTitleLongPress,
+                                    child: Text(
+                                      title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium,
+                                    ),
                                   ),
                                   if (subtitle != null) ...[
                                     SizedBox(height: subtitleSpacing),
