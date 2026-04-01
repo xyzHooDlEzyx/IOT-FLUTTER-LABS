@@ -59,37 +59,6 @@ mixin _RegisterPageLogic on State<RegisterPage> {
       password: password,
       company: company,
     );
-    try {
-      await AuthStore.instance.saveUser(user);
-      await AuthStore.instance.setLoggedIn(true);
-
-      if (!mounted) {
-        return;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account created.')),
-      );
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.profile,
-        (route) => false,
-      );
-    } on FirebaseAuthException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      final message = error.message ?? 'Unknown auth error.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Auth error: ${error.code} - $message')),
-      );
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to create account.')),
-      );
-    }
+    context.read<AuthCubit>().register(user);
   }
 }

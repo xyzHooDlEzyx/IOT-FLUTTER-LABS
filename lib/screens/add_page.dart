@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my_project/domain/models/device_item.dart';
-import 'package:my_project/services/device_store.dart';
+import 'package:my_project/state/devices/devices_cubit.dart';
 import 'package:my_project/widgets/app_card.dart';
 import 'package:my_project/widgets/app_shell.dart';
 import 'package:my_project/widgets/app_text_field.dart';

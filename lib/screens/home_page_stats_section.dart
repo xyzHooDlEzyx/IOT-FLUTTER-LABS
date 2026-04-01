@@ -1,9 +1,13 @@
-part of 'home_page.dart';
+import 'package:flutter/material.dart';
+import 'package:my_project/widgets/app_card.dart';
+import 'package:my_project/widgets/section_title.dart';
+import 'package:my_project/widgets/stat_tile.dart';
 
-class _HomeStatsCard extends StatelessWidget {
-  const _HomeStatsCard({
+class HomeStatsCard extends StatelessWidget {
+  const HomeStatsCard({
     required this.statWidth,
     required this.deviceCount,
+    super.key,
   });
 
   final double statWidth;

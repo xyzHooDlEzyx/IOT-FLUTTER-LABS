@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my_project/domain/models/local_user.dart';
 import 'package:my_project/domain/validators/user_validator.dart';
 import 'package:my_project/routes/app_routes.dart';
-import 'package:my_project/services/auth_store.dart';
+import 'package:my_project/state/auth/auth_cubit.dart';
+import 'package:my_project/state/auth/auth_state.dart';
 import 'package:my_project/widgets/app_card.dart';
 import 'package:my_project/widgets/app_shell.dart';
 import 'package:my_project/widgets/app_text_field.dart';

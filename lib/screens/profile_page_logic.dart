@@ -5,13 +5,15 @@ mixin _ProfilePageLogic on State<ProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _companyController = TextEditingController();
 
-  LocalUser? _user;
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _loadUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      context.read<AuthCubit>().loadUser();
+    });
   }
 
   @override
@@ -22,22 +24,9 @@ mixin _ProfilePageLogic on State<ProfilePage> {
     super.dispose();
   }
 
-  Future<void> _loadUser() async {
-    final user = await AuthStore.instance.getUser();
-    if (!mounted) {
-      return;
-    }
-    _user = user;
-    _fullNameController.text = user?.fullName ?? '';
-    _emailController.text = user?.email ?? '';
-    _companyController.text = user?.company ?? '';
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> _saveProfile() async {
-    if (_user == null) {
+    final user = context.read<AuthCubit>().state.user;
+    if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No profile loaded yet.')),
       );
@@ -72,45 +61,19 @@ mixin _ProfilePageLogic on State<ProfilePage> {
       return;
     }
 
-    final updated = _user!.copyWith(
+    final updated = user.copyWith(
       fullName: fullName,
       email: email,
       company: company,
     );
-
-    await AuthStore.instance.saveUser(updated);
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _user = updated;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated.')),
-    );
+    context.read<AuthCubit>().updateProfile(updated);
   }
 
   Future<void> _logout() async {
-    await AuthStore.instance.setLoggedIn(false);
-    if (!mounted) {
-      return;
-    }
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.login,
-      (route) => false,
-    );
+    await context.read<AuthCubit>().logout();
   }
 
   Future<void> _deleteProfile() async {
-    await AuthStore.instance.clearUser();
-    if (!mounted) {
-      return;
-    }
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.login,
-      (route) => false,
-    );
+    await context.read<AuthCubit>().deleteProfile();
   }
 }

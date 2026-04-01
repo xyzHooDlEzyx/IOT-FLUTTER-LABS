@@ -1,21 +1,31 @@
-part of 'home_page.dart';
+import 'package:flutter/material.dart';
+import 'package:my_project/domain/models/device_item.dart';
+import 'package:my_project/widgets/app_card.dart';
+import 'package:my_project/widgets/device_list_item.dart';
+import 'package:my_project/widgets/icon_action_button.dart';
+import 'package:my_project/widgets/section_title.dart';
 
-class _HomeRecentDevicesCard extends StatelessWidget {
-  const _HomeRecentDevicesCard({
+typedef DeviceCallback = Future<void> Function(DeviceItem device);
+typedef OpenCallback = Future<void> Function();
+typedef OptionalDeviceCallback = Future<void> Function({DeviceItem? device});
+
+class HomeRecentDevicesCard extends StatelessWidget {
+  const HomeRecentDevicesCard({
     required this.isLoading,
     required this.devices,
     required this.onAdd,
     required this.onDelete,
     required this.onOpenDevice,
     required this.onViewAll,
+    super.key,
   });
 
   final bool isLoading;
   final List<DeviceItem> devices;
-  final _OptionalDeviceCallback onAdd;
-  final _DeviceCallback onDelete;
-  final _DeviceCallback onOpenDevice;
-  final _OpenCallback onViewAll;
+  final OptionalDeviceCallback onAdd;
+  final DeviceCallback onDelete;
+  final DeviceCallback onOpenDevice;
+  final OpenCallback onViewAll;
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +72,7 @@ class _HomeRecentDevicesCard extends StatelessWidget {
                 IconActionButton(
                   tooltip: 'Add device',
                   icon: Icons.add,
-                  onPressed: () {
-                    onAdd();
-                  },
+                  onPressed: onAdd,
                 ),
               ],
             ),

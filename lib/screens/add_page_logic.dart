@@ -55,11 +55,8 @@ mixin _AddPageLogic on State<AddPage> {
       return;
     }
 
-    final devices = await DeviceStore.instance.getDevices();
-    final updated = List<DeviceItem>.from(devices);
     if (_editingDevice != null) {
       final device = _editingDevice!;
-      final index = updated.indexWhere((item) => item.id == device.id);
       final next = device.copyWith(
         name: name,
         location: location,
@@ -67,23 +64,18 @@ mixin _AddPageLogic on State<AddPage> {
         mqttUrl: mqttUrl,
         topic: topic,
       );
-      if (index >= 0) {
-        updated[index] = next;
-      }
+      await context.read<DevicesCubit>().saveDevice(next);
     } else {
-      updated.add(
-        DeviceItem(
-          id: DateTime.now().microsecondsSinceEpoch.toString(),
-          name: name,
-          location: location,
-          status: status,
-          mqttUrl: mqttUrl,
-          topic: topic,
-        ),
+      final next = DeviceItem(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        name: name,
+        location: location,
+        status: status,
+        mqttUrl: mqttUrl,
+        topic: topic,
       );
+      await context.read<DevicesCubit>().saveDevice(next);
     }
-
-    await DeviceStore.instance.saveDevices(updated);
     if (!mounted) {
       return;
     }

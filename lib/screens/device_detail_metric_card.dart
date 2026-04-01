@@ -1,9 +1,10 @@
-part of 'device_detail_page.dart';
+import 'package:flutter/material.dart';
 
-class _MetricCard extends StatelessWidget {
-  const _MetricCard({
+class DeviceDetailMetricCard extends StatelessWidget {
+  const DeviceDetailMetricCard({
     required this.label,
     required this.value,
+    super.key,
   });
 
   final String label;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my_project/domain/validators/user_validator.dart';
 import 'package:my_project/routes/app_routes.dart';
-import 'package:my_project/services/auth_store.dart';
+import 'package:my_project/state/auth/auth_cubit.dart';
+import 'package:my_project/state/auth/auth_state.dart';
 import 'package:my_project/widgets/app_card.dart';
 import 'package:my_project/widgets/app_shell.dart';
 import 'package:my_project/widgets/app_text_field.dart';
@@ -45,71 +47,71 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final isValid =
-        await AuthStore.instance.validateLogin(email, password);
-    if (!mounted) {
-      return;
-    }
-
-    if (!isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Incorrect email or password.')),
-      );
-      return;
-    }
-
-    await AuthStore.instance.setLoggedIn(true);
-    if (!mounted) {
-      return;
-    }
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.home,
-      (route) => false,
-    );
+    context.read<AuthCubit>().login(email, password);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppShell(
-      title: 'Welcome back',
-      subtitle: 'Access your IoT control room',
-      child: AppCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AppTextField(
-              label: 'Email',
-              hint: 'name@domain.com',
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              onSubmitted: (_) {
-                FocusScope.of(context).nextFocus();
-              },
+    return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (previous, current) =>
+          previous.status != current.status,
+      listener: (context, state) {
+        if (state.status == AuthStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message ?? 'Failed to sign in.'),
             ),
-            const SizedBox(height: 16),
-            AppTextField(
-              label: 'Password',
-              hint: '********',
-              controller: _passwordController,
-              obscureText: true,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => _handleLogin(),
-            ),
-            const SizedBox(height: 20),
-            PrimaryButton(
-              label: 'Sign in',
-              onPressed: _handleLogin,
-            ),
-            const SizedBox(height: 12),
-            GhostButton(
-              label: 'Create an account',
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.register);
-              },
-            ),
-          ],
+          );
+          return;
+        }
+        if (state.status == AuthStatus.authenticated) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppRoutes.home,
+            (route) => false,
+          );
+        }
+      },
+      child: AppShell(
+        title: 'Welcome back',
+        subtitle: 'Access your IoT control room',
+        child: AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppTextField(
+                label: 'Email',
+                hint: 'name@domain.com',
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) {
+                  FocusScope.of(context).nextFocus();
+                },
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'Password',
+                hint: '********',
+                controller: _passwordController,
+                obscureText: true,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _handleLogin(),
+              ),
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: 'Sign in',
+                onPressed: _handleLogin,
+              ),
+              const SizedBox(height: 12),
+              GhostButton(
+                label: 'Create an account',
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.register);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

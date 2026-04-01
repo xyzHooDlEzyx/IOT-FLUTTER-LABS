@@ -1,7 +1,10 @@
-part of 'view_all_devices_page.dart';
+import 'package:flutter/material.dart';
 
-class _StatusDot extends StatelessWidget {
-  const _StatusDot({required this.isConnected});
+class ViewAllDevicesStatusDot extends StatelessWidget {
+  const ViewAllDevicesStatusDot({
+    required this.isConnected,
+    super.key,
+  });
 
   final bool isConnected;
 
