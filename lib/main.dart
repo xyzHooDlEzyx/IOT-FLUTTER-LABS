@@ -10,9 +10,17 @@ import 'package:my_project/services/theme_store.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } on FirebaseException catch (error) {
+      if (error.code != 'duplicate-app') {
+        rethrow;
+      }
+    }
+  }
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
